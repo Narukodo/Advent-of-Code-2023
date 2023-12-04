@@ -6,6 +6,7 @@ def sanitize_handful(handful):
         new_handful[colours.index(colour)] = int(number)
     return new_handful
 
+# part 1
 def is_handful_possible(handful):
     MAX_CUBES = [12, 13, 14] # [RED, GREEN, BLUE]
     return all([ball_type <= MAX_CUBES[ball_colour_number] for ball_colour_number, ball_type in enumerate(handful)])
@@ -35,6 +36,8 @@ def sum_ids_for_possible_games():
         if game_is_possible:
             results += game_id + 1
     return results
+
+print(sum_ids_for_possible_games())
 
 # part 2
 def cube_power(cube_set):
