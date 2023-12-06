@@ -18,7 +18,7 @@ def total_points():
         if num_winning_chosen_numbers > 0:
             total_points += 2**(num_winning_chosen_numbers - 1)
     return total_points
-# print(total_points())
+print(total_points())
 
 # part 2
 def num_scratch_cards():
