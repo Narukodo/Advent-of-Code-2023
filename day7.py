@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 def parse_input():
     with open('day7_input.txt') as f:
         hands_and_bids = [[line.split()[0] ,int(line.split()[1])] for line in f.read().splitlines()]
@@ -88,3 +90,30 @@ def total_winnings_2():
     return total_winnings
 
 print(total_winnings_2())
+
+# alternative, more readable solution.
+def hand_type_3(hand):
+    hand_types = ['11111', '1112', '122', '113', '23', '14', '5']
+    distinct_card_count = defaultdict(lambda: 0)
+    for card in hand:
+        distinct_card_count[card] += 1
+    num_jokers = distinct_card_count.pop('J', 0)
+    if num_jokers == 5:
+        return 6
+    sorted_card_counts = sorted([distinct_card_count[card] for card in distinct_card_count])
+    sorted_card_counts[-1] += num_jokers
+    return hand_types.index(''.join(str(card_count) for card_count in sorted_card_counts))
+
+def categorize_hands_3(hands_with_bids):
+    hand_groups = [[],[],[],[],[],[],[]]
+    for hand, bid in hands_with_bids:
+        hand_groups[hand_type_3(hand)].append((hand, hand_score_2(hand), bid))
+    return [hand for categorized_hands in hand_groups for hand in sorted(categorized_hands, key=lambda x: x[1])]
+
+def total_winnings_3():
+    hands_and_bids = parse_input()
+    sorted_hands = categorize_hands_3(hands_and_bids)
+    total_winnings = sum([hands_scores_bids[2] * (index + 1) for index, hands_scores_bids in enumerate(sorted_hands)])
+    return total_winnings
+
+print(total_winnings_3())
