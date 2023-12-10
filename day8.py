@@ -9,18 +9,18 @@ def parse_input():
         return directions, network
 
 # part 1
-# def follow_map():
-#     directions, network = parse_input()
-#     NUM_DIRECTIONS = len(directions)
-#     current_node = 'AAA'
-#     current_instruction = 0
-#     num_steps = 0
-#     while current_node != 'ZZZ':
-#         current_node = network[current_node][directions[current_instruction]]
-#         current_instruction = (current_instruction + 1) % NUM_DIRECTIONS
-#         num_steps += 1
-#     return num_steps
-# print(follow_map())
+def follow_map():
+    directions, network = parse_input()
+    NUM_DIRECTIONS = len(directions)
+    current_node = 'AAA'
+    current_instruction = 0
+    num_steps = 0
+    while current_node != 'ZZZ':
+        current_node = network[current_node][directions[current_instruction]]
+        current_instruction = (current_instruction + 1) % NUM_DIRECTIONS
+        num_steps += 1
+    return num_steps
+print(follow_map())
 
 # part 2
 def lcm(numbers):
