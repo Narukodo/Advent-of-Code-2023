@@ -71,31 +71,41 @@ def find_max_distance():
     return distance - 1, visited
 # print(find_max_distance())
 
-def count_column(pipe_tiles):
+def count_row(pipe_tiles, row):
     min_y = pipe_tiles[0]
     max_y = pipe_tiles[-1]
-    space_count = 0
+    should_count = ('', False)
     tiles_in_loop = 0
     for i in range (min_y, max_y + 1):
-        if i not in pipe_tiles and i - 1 in pipe_tiles:
-            space_count += 1
-        if space_count % 2 == 1 and i not in pipe_tiles:
-            tiles_in_loop += 1
+        if i in pipe_tiles:
+            if row[i].symbol == '|':
+                should_count = (row[i].symbol, not should_count)
+            elif row[i].east and not row[i].west:
+                should_count = (row[i].symbol, not should_count)
+            elif should_count[0] == 'L' and row[i].symbol != '-' and row[i].symbol != '7':
+                should_count = (row[i].symbol, not should_count)
+            elif should_count[0] == 'F' and row[i].symbol != '-' and row[i].symbol != 'J':
+                should_count = (row[i].symbol, not should_count)
+            elif row[i].symbol == '7' or row[i].symbol == 'J':
+                should_count = (row[i].symbol, not should_count)
+        else:
+            if should_count[1]:
+                tiles_in_loop += 1
     return tiles_in_loop
 
 # pipes only have two ends, so following from the start will yield the loop path
-def count_area(loop_path):
+def count_area(ground, loop_path):
     tiles = defaultdict(lambda: [])
     loop_path.sort()
     num_open_spaces = 0
     for y, x in loop_path:
-        tiles[x] += [y]
-    for x in sorted(tiles.keys()):
-        num_open_spaces += count_column(tiles[x])
+        tiles[y] += [x]
+    for y in sorted(tiles.keys()):
+        num_open_spaces += count_row(tiles[y], ground[y])
     return num_open_spaces
 
 def get_loop_area():
     ground = parse_input()
     paths_from_start = list(set(find_max_distance()[1]))
-    print(count_area(paths_from_start))
+    print(count_area(ground, paths_from_start))
 get_loop_area()
