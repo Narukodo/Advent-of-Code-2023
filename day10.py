@@ -3,7 +3,7 @@ from collections import namedtuple, defaultdict
 Tile = namedtuple('Tile', ['position', 'symbol', 'north', 'east', 'south', 'west'])
 
 def parse_input():
-    with open('day10_test2_input.txt') as f: # expected: 20
+    with open('day10_input.txt') as f: # expected: 20
         tile_pipe = lambda position: {
             '|': Tile(position, '|', True, False, True, False), #[N, E, S, W]
             '-': Tile(position, '-', False, True, False, True),
@@ -71,25 +71,50 @@ def find_max_distance():
     return distance - 1, visited
 # print(find_max_distance())
 
+def infer_tile(tile, ground):
+    n = ground[max(0, tile.position[0] - 1)][tile.position[1]].south
+    e = ground[tile.position[0]][min(len(ground[0]) - 1, tile.position[1] + 1)].west
+    s = ground[min(len(ground) - 1, tile.position[0] + 1)][tile.position[1]].north
+    w = ground[tile.position[0]][max(0, tile.position[1] - 1)].east
+    if n and s:
+        return Tile(tile.position, '|', n, e, s, w)
+    if n and e:
+        return Tile(tile.position, 'L', n, e, s, w)
+    if n and w:
+        return Tile(tile.position, 'J', n, e, s, w)
+    if s and e:
+        return Tile(tile.position, 'F', n, e, s, w)
+    if s and w:
+        return Tile(tile.position, '7', n, e, s, w)
+    if e and w:
+        return Tile(tile.position, '-', n, e, s, w)
+
 def count_row(pipe_tiles, row):
-    min_y = pipe_tiles[0]
-    max_y = pipe_tiles[-1]
-    should_count = ('', False)
     tiles_in_loop = 0
-    for i in range (min_y, max_y + 1):
+    should_count = False
+    last_tile = ''
+    for i, tile in enumerate(row):
         if i in pipe_tiles:
-            if row[i].symbol == '|':
-                should_count = (row[i].symbol, not should_count)
-            elif row[i].east and not row[i].west:
-                should_count = (row[i].symbol, not should_count)
-            elif should_count[0] == 'L' and row[i].symbol != '-' and row[i].symbol != '7':
-                should_count = (row[i].symbol, not should_count)
-            elif should_count[0] == 'F' and row[i].symbol != '-' and row[i].symbol != 'J':
-                should_count = (row[i].symbol, not should_count)
-            elif row[i].symbol == '7' or row[i].symbol == 'J':
-                should_count = (row[i].symbol, not should_count)
+            if tile.symbol == '|': 
+                should_count = not should_count
+                last_tile = '|'
+            if tile.symbol == 'F': 
+                should_count = not should_count
+                last_tile = 'F'
+            if tile.symbol == '7': 
+                if last_tile != 'L':
+                    should_count = not should_count
+                last_tile = '7'
+            if tile.symbol == 'L':
+                should_count = not should_count
+                last_tile = 'L'
+            if tile.symbol == 'J': 
+                if last_tile != 'F':
+                    should_count = not should_count
+                last_tile = 'J'
+            if tile.symbol == '-': pass
         else:
-            if should_count[1]:
+            if should_count:
                 tiles_in_loop += 1
     return tiles_in_loop
 
@@ -107,5 +132,8 @@ def count_area(ground, loop_path):
 def get_loop_area():
     ground = parse_input()
     paths_from_start = list(set(find_max_distance()[1]))
+    start_tile = find_start(ground)
+    start_y, start_x = start_tile.position
+    ground[start_y][start_x] = infer_tile(start_tile, ground)
     print(count_area(ground, paths_from_start))
 get_loop_area()
