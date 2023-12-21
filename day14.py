@@ -153,23 +153,31 @@ def find_rock(rock_number, rocks):
      for rock in rocks:
          if rock[0] == rock_number:
              return (rock[1][0], rock[1][1])
+         
+def find_repeating_pattern(weights, length):
+    for i in range(length):
+        for j in range(2, length):
+            if weights[i:i + j] == weights[i + j: i + j * 2]:
+                return weights[i:i + j], i
+    return False, False
+
 def simulate():
-    length, width, rocks, setup = parse_input()[-3:]
+    length, width, rocks, setup = parse_input()[-4:]
     new_rocks = rocks.copy()
     num_cycles = 1000
     weights = []
-    stabilized_weights = set()
-    counter = 0
-    length_weights = 0
-    print(weights[(num_cycles - 3) % 7])
+    weights_length = 0
     for i in range(num_cycles):
         load = plate_load(length, new_rocks)
         weights.append(load)
-        stabilized_weights.add(load)
+        weights_length += 1
+        stabilized_weights, stabilized_offset = find_repeating_pattern(weights, weights_length)
+        if stabilized_weights:
+            return stabilized_weights[(num_cycles - stabilized_offset) % len(stabilized_weights)]
         new_rocks = tilt('N', new_rocks, length, width)
         new_rocks = tilt('W', new_rocks, length, width)
         new_rocks = tilt('S', new_rocks, length, width)
         new_rocks = tilt('E', new_rocks, length, width)
     print(plate_load(length, new_rocks))
     
-simulate()
+print(simulate())
