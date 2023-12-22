@@ -1,7 +1,7 @@
 import math
 
 def parse_input():
-    with open('day6_input.txt') as f:
+    with open('day6/day6_input.txt') as f:
         game_record = f.read().splitlines()
         current_best_results = [[int(value) for value in line.split()[1:]] for line in game_record]
         single_game_results = [int(''.join(line.split()[1:])) for line in game_record]

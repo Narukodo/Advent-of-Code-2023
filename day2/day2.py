@@ -18,7 +18,7 @@ def evaluate_possible_games(game_results):
     return [is_game_possible(game) for game in game_results]
 
 def parse_input():
-    with open('day2_input.txt') as f:
+    with open('day2/day2_input.txt') as f:
         game_results = f.read().splitlines()
         game_results = [game.split(': ')[1] for game in game_results]
         handfuls_by_game = [game.split('; ') for game in game_results]

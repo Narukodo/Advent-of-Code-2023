@@ -1,7 +1,7 @@
 import math
 
 def parse_input():
-    with open('day8_input.txt') as f:
+    with open('day8/day8_input.txt') as f:
         instructions = f.read().splitlines()
         directions = instructions[0]
         map_nodes = [connection.split(' = ') for connection in instructions[2:]]

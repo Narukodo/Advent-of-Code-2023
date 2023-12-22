@@ -2,7 +2,7 @@ def format_mapping(mapping_list):
     return [[int(value) for value in mapping.split()] for mapping in mapping_list]
 
 def parse_input():
-    with open('day5_input.txt') as f:
+    with open('day5/day5_input.txt') as f:
         almanac = list(map(lambda x: x.split('\n'), f.read().split('\n\n')))
         seeds = [int(seed) for seed in almanac[0][0].split()[1:]]
         mappings_by_category = [seeds] + [format_mapping(mapping_list[1:]) for mapping_list in almanac[1:]]

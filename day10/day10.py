@@ -3,7 +3,7 @@ from collections import namedtuple, defaultdict
 Tile = namedtuple('Tile', ['position', 'symbol', 'north', 'east', 'south', 'west'])
 
 def parse_input():
-    with open('day10_input.txt') as f: # expected: 20
+    with open('day10/day10_input.txt') as f: # expected: 20
         tile_pipe = lambda position: {
             '|': Tile(position, '|', True, False, True, False), #[N, E, S, W]
             '-': Tile(position, '-', False, True, False, True),

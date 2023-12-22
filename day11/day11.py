@@ -2,7 +2,7 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
 def parse_input():
-    with open('day11_input.txt') as f:
+    with open('day11/day11_input.txt') as f:
         space_image = f.read().splitlines()
         rotated_space_image = list(zip(*space_image))
         empty_rows = {index for index, row in enumerate(space_image) if '#' not in row}

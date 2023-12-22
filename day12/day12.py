@@ -1,5 +1,5 @@
 def parse_input():
-    with open('day12_test_input.txt') as f:
+    with open('day12/day12_test_input.txt') as f:
         return [(line.split()[0], [int(number) for number in line.split()[1].split(',')]) for line in f.read().splitlines()]
 
 def split_record(record):

@@ -1,6 +1,6 @@
 import math
 def parse_input():
-    with open('day13_input.txt') as f:
+    with open('day13/day13_input.txt') as f:
         patterns = [pattern.split() for pattern in f.read().split('\n\n')]
         return patterns
 

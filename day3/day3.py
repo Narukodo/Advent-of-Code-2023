@@ -33,7 +33,7 @@ def is_symbol(char):
     return not char.isdigit() and char != '.'
 
 def parse_input():
-    with open('day3_input.txt') as f:
+    with open('day3/day3_input.txt') as f:
         engine_schematic = f.read().splitlines()
         return engine_schematic
 

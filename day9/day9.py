@@ -1,5 +1,5 @@
 def parse_input():
-    with open('day9_input.txt') as f:
+    with open('day9/day9_input.txt') as f:
         histories = [[int(value) for value in line.split()] for line in f.read().splitlines()]
         return histories
     

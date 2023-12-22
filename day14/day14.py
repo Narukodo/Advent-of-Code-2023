@@ -4,7 +4,7 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
 def parse_input():
-    with open('day14_input.txt') as f:
+    with open('day14/day14_input.txt') as f:
         setup = f.read().splitlines()
         round_rocks_dict = defaultdict(lambda: [])
         cube_rocks_dict = defaultdict(lambda: [])

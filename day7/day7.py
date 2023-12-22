@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 def parse_input():
-    with open('day7_input.txt') as f:
+    with open('day7/day7_input.txt') as f:
         hands_and_bids = [[line.split()[0] ,int(line.split()[1])] for line in f.read().splitlines()]
         return hands_and_bids
 

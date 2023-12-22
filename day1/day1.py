@@ -1,6 +1,6 @@
 import re
 
-with open('day1_input.txt') as f:
+with open('day1/day1_input.txt') as f:
     fancy_values = f.read().splitlines()
 
     # day 1

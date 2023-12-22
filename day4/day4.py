@@ -1,5 +1,5 @@
 def parse_input():
-    with open('day4_input.txt') as f: 
+    with open('day4/day4_input.txt') as f: 
         cards_info = f.read().splitlines()
         cards_info = [card.split(': ')[1] for card in cards_info]
         card_numbers = [[set([int(number) for number in number_set.lstrip().split()]) for number_set in card.split(' | ')] for card in cards_info]
