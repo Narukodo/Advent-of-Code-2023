@@ -38,14 +38,14 @@ def load(round_rock, round_rocks, cube_rocks, num_rows):
     return num_rows - final_rock_index
 
 def count_load():
-    round_rocks, cube_rocks, num_rows, width, rocks = parse_input()
+    round_rocks, cube_rocks, num_rows = parse_input()[:3]
     final_load = 0
     for x in round_rocks:
         for y in round_rocks[x]:
             final_load += load((y, x), round_rocks, cube_rocks, num_rows)
     return final_load
 
-# print(count_load())
+print(count_load())
 
 def move(direction, rock, length, width, plate):
     rock_count = 0
@@ -78,8 +78,8 @@ def tilt(direction, rocks, length, width, plate):
             new_rocks.append(move(direction, rock, length, width, plate))
         else:
             new_rocks.append(rock)
-    plate, load = construct_plate(new_rocks, length, width)
-    return new_rocks, plate, load
+    plate = construct_plate(new_rocks, length, width)
+    return new_rocks, plate
 
 def plate_load(length, rocks):
     total_load = 0
@@ -96,7 +96,7 @@ def construct_plate(rocks, length, width):
         if rock[2] == 'O':
             load += length - rock[0]
     new_plate = [''.join(row) for row in new_plate]
-    return new_plate, load
+    return new_plate
 
 def simulate():
     length, width, rocks, plate = parse_input()[-4:]
@@ -104,19 +104,19 @@ def simulate():
     num_cycles = 1000000000
     recorded_positions = dict()
     for i in range(num_cycles):
-        new_rocks, plate, load = tilt('N', new_rocks, length, width, plate)
-        new_rocks, plate, load = tilt('W', new_rocks, length, width, plate)
-        new_rocks, plate, load = tilt('S', new_rocks, length, width, plate)
-        new_rocks, plate, load = tilt('E', new_rocks, length, width, plate)
+        new_rocks, plate = tilt('N', new_rocks, length, width, plate)
+        new_rocks, plate = tilt('W', new_rocks, length, width, plate)
+        new_rocks, plate = tilt('S', new_rocks, length, width, plate)
+        new_rocks, plate = tilt('E', new_rocks, length, width, plate)
         current_plate_key = ''.join(plate)
         if current_plate_key in recorded_positions:
             cycles_left = (num_cycles - i) % (i - recorded_positions[current_plate_key]) - 1
             for i in range(cycles_left):
-                new_rocks, plate, load = tilt('N', new_rocks, length, width, plate)
-                new_rocks, plate, load = tilt('W', new_rocks, length, width, plate)
-                new_rocks, plate, load = tilt('S', new_rocks, length, width, plate)
-                new_rocks, plate, load = tilt('E', new_rocks, length, width, plate)
-            return load
+                new_rocks, plate = tilt('N', new_rocks, length, width, plate)
+                new_rocks, plate = tilt('W', new_rocks, length, width, plate)
+                new_rocks, plate = tilt('S', new_rocks, length, width, plate)
+                new_rocks, plate = tilt('E', new_rocks, length, width, plate)
+            return plate_load(length, new_rocks)
         else:
             recorded_positions[current_plate_key] = i
     return plate_load(length, new_rocks)
