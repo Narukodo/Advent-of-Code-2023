@@ -92,30 +92,27 @@ def count_load():
 
 def new_position(direction, rock, length, width, plate):
     rock_count = 0
+    y, x, rock_type = rock
     if direction == 'N':
-        column = list(zip(*plate))[rock[1]]
-        for i in range(rock[0] - 1, -1, -1):
-            if column[i] == 'O': rock_count += 1
-            if column[i] == '#': return [i + rock_count + 1, rock[1], rock[2]]
-        return [rock_count, rock[1], rock[2]]
-    if direction == 'W':
-        row = plate[rock[0]]
-        for i in range(rock[1] - 1, -1, -1):
-            if row[i] == 'O': rock_count += 1
-            if row[i] == '#': return [rock[0], i + rock_count + 1, rock[2]]
-        return [rock[0], rock_count, rock[2]]
-    if direction == 'S':
-        column = list(zip(*plate))[rock[1]]
-        for i in range(rock[0] + 1, length):
-            if column[i] == 'O': rock_count += 1
-            if column[i] == '#': return [i - rock_count - 1, rock[1], rock[2]]
-        return [length - rock_count - 1, rock[1], rock[2]]
-    if direction == 'E':
-        row = plate[rock[0]]
-        for i in range(rock[1] + 1, width):
-            if row[i] == 'O': rock_count += 1
-            if row[i] == '#': return [rock[0], i - rock_count - 1, rock[2]]
-        return [rock[0], width - rock_count - 1, rock[2]]
+        for i in range(y - 1, -1, -1):
+            if plate[i][x] == 'O': rock_count += 1
+            if plate[i][x] == '#': return [i + rock_count + 1, x, rock_type]
+        return [rock_count, x, rock_type]
+    elif direction == 'W':
+        for i in range(x - 1, -1, -1):
+            if plate[y][i] == 'O': rock_count += 1
+            if plate[y][i] == '#': return [y, i + rock_count + 1, rock_type]
+        return [y, rock_count, rock_type]
+    elif direction == 'S':
+        for i in range(y + 1, length):
+            if plate[i][x] == 'O': rock_count += 1
+            if plate[i][x] == '#': return [i - rock_count - 1, x, rock_type]
+        return [length - rock_count - 1, x, rock_type]
+    else:
+        for i in range(x + 1, width):
+            if plate[y][i] == 'O': rock_count += 1
+            if plate[y][i] == '#': return [y, i - rock_count - 1, rock_type]
+        return [y, width - rock_count - 1, rock_type]
 
 def move(direction, rock, length, width, plate):
     # y, x, rock_type = rock
@@ -139,8 +136,8 @@ def tilt(direction, rocks, length, width, plate):
             new_rocks.append(move(direction, rock, length, width, plate))
         else:
             new_rocks.append(rock)
-    plate = construct_plate(new_rocks, length, width)
-    return new_rocks, plate
+    plate, load = construct_plate(new_rocks, length, width)
+    return new_rocks, plate, load
 
 def plate_load(length, rocks):
     total_load = 0
@@ -171,6 +168,7 @@ def plate_load(length, rocks):
 
 def construct_plate(rocks, length, width):
     new_plate = []
+    load = 0
     for i in range(length):
         row = ''
         for j in range(width):
@@ -178,11 +176,13 @@ def construct_plate(rocks, length, width):
             for rock in rocks:
                 if rock[0] == i and rock[1] == j:
                     row += rock[2]
+                    if rock[2] == 'O':
+                        load += length - rock[0]
                     is_rock = True
             if not is_rock:
                 row += '.'
         new_plate.append(row)
-    return new_plate
+    return new_plate, load
 
 def find_repeating_pattern(weights, length):
     for i in range(length):
@@ -197,6 +197,7 @@ def simulate():
     num_cycles = 1000000000
     weights = []
     weights_length = 0
+    recorded_positions = dict()
     for i in range(num_cycles):
         load = plate_load(length, new_rocks)
         weights.append(load)
@@ -204,15 +205,26 @@ def simulate():
         stabilized_weights, stabilized_offset = find_repeating_pattern(weights, weights_length)
         if stabilized_weights:
             return stabilized_weights[(num_cycles - stabilized_offset) % len(stabilized_weights)]
-        new_rocks, plate = tilt('N', new_rocks, length, width, plate)
+        new_rocks, plate, load = tilt('N', new_rocks, length, width, plate)
         # pp.pprint(plate)
-        new_rocks, plate = tilt('W', new_rocks, length, width, plate)
+        new_rocks, plate, load = tilt('W', new_rocks, length, width, plate)
         # pp.pprint(plate)
-        new_rocks, plate = tilt('S', new_rocks, length, width, plate)
+        new_rocks, plate, load = tilt('S', new_rocks, length, width, plate)
         # pp.pprint(plate)
-        new_rocks, plate = tilt('E', new_rocks, length, width, plate)
+        new_rocks, plate, load = tilt('E', new_rocks, length, width, plate)
         # pp.pprint(plate)
-        print(f'finished cycle {i} {load}')
+        # print(f'finished cycle {i} {load}')
+        # current_plate_key = ''.join(plate)
+        # if current_plate_key in recorded_positions:
+        #     cycles_left = (num_cycles - i) % (i - recorded_positions[current_plate_key])
+        #     for i in range(cycles_left):
+        #         new_rocks, plate, load = tilt('N', new_rocks, length, width, plate)
+        #         new_rocks, plate, load = tilt('W', new_rocks, length, width, plate)
+        #         new_rocks, plate, load = tilt('S', new_rocks, length, width, plate)
+        #         new_rocks, plate, load = tilt('E', new_rocks, length, width, plate)
+        #     return load
+        # else:
+        #     recorded_positions[current_plate_key] = i
     return plate_load(length, new_rocks)
     
 print(simulate())
